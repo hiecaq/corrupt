@@ -1,6 +1,7 @@
-use std::io::BufRead;
-use std::collections::VecDeque;
+use crate::error::Result;
 use regex::Regex;
+use std::collections::VecDeque;
+use std::io::BufRead;
 
 pub enum Token {
     Matched(usize, String),
@@ -24,12 +25,14 @@ impl<R: BufRead> TokenStream<R> {
     }
 
     fn earliest_match<'a>(&self, input: &'a str) -> Option<(usize, &'a str, &'a str, &'a str)> {
-        let output = self.regs.iter().enumerate()
+        let output = self
+            .regs
+            .iter()
+            .enumerate()
             .filter_map(|(n, re)| re.find(input).map(|m| (m.start(), m.end(), n)))
             .min();
-        output.map(|(start, end, color)| {
-            (color, &input[..start], &input[start..end], &input[end..])
-        })
+        output
+            .map(|(start, end, color)| (color, &input[..start], &input[start..end], &input[end..]))
     }
 
     fn parse_string(&mut self, s: &str) -> Option<Token> {
@@ -59,7 +62,7 @@ impl<R: BufRead> Iterator for TokenStream<R> {
                 None => {
                     let mut s: String = String::new();
                     match self.input.read_line(&mut s) {
-                        Err(e) => Err(e).unwrap(),
+                        Err(e) => Err(e).expect("failed to parse"),
                         Ok(0) => return None,
                         Ok(_) => (),
                     }
