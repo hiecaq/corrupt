@@ -3,8 +3,8 @@ name = "corrupt"
 version = "0.1.0"
 authors = ["quinoa42 <quinoa.echo@gmail.com>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "minimal cli stdio coloring filter"
+license = "MIT OR Apache-2.0"
 
 [dependencies]
 crossterm = { version = "0.17", features = ["serde"] }
